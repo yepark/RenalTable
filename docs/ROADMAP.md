@@ -1,7 +1,7 @@
 # RenalTable 로드맵
 
 - 최종 갱신: 2026-11-01
-- 현재 상태: Phase 0 완료, Phase 1 승인 대기
+- 현재 상태: Phase 1 완료, Phase 2 승인 대기
 - 상태 표기: `[x] 완료`, `[ ] 미착수`, `[!] 사람 승인/외부 검증 필요`
 
 ## Phase 0 — 프로젝트 분석 및 요구사항
@@ -22,41 +22,47 @@ Phase 0 종료 조건: 애플리케이션 코드, DB, 외부 서비스 연결, �
 
 ### P1-01 기반 초기화
 
-- [ ] 작업 당일 공식 릴리스/보안 공지 재확인
-- [ ] Node 24 LTS와 npm 버전 정책 고정
-- [ ] Next.js 16 App Router + TypeScript strict + Tailwind 4 초기화
-- [ ] 한국어 metadata, 기본 layout, 반응형 shell
+- [x] 작업 당일 공식 릴리스/보안 공지 재확인
+- [x] Node 24 LTS와 npm 버전 정책 고정
+- [x] Next.js 16 App Router + TypeScript strict + Tailwind 4 초기화
+- [x] 한국어 metadata, 기본 layout, 반응형 shell
 - 수용 기준: clean install, dev/build/typecheck 성공; 샘플 영양 수치 없음
 
 ### P1-02 품질 도구
 
-- [ ] ESLint, formatter, import boundary 규칙
-- [ ] Vitest 5, Testing Library, Playwright 설정
-- [ ] 정상/실패 예제 테스트와 접근성 smoke test
+- [x] ESLint, formatter, import boundary 규칙
+- [x] Vitest 5, Testing Library, Playwright 설정
+- [x] 정상/실패 예제 테스트와 접근성 smoke test
 - 수용 기준: 단일 명령으로 lint/typecheck/unit/build/E2E smoke 실행
 
 ### P1-03 CI와 저장소 위생
 
-- [ ] GitHub Actions PR workflow
-- [ ] 최소 권한, lockfile install, cache, secret scan
-- [ ] `.env.example`, `.gitignore`, 기여/로컬 실행 README
+- [x] GitHub Actions PR workflow
+- [x] 최소 권한, lockfile install, cache, secret scan
+- [x] `.env.example`, `.gitignore`, 기여/로컬 실행 README
 - 수용 기준: secret 없이 PR CI 통과; 배포 workflow 없음
 
 ### P1-04 디자인 시스템 기반
 
-- [ ] 검증된 색/타입/간격 token
-- [ ] Button, Input, Notice, DataStatusBadge, SourceDisclosure
-- [ ] 320 px, keyboard, contrast, 200% zoom 검증
+- [x] 검증된 색/타입/간격 token
+- [x] Button, Input, Notice, DataStatusBadge, SourceDisclosure
+- [x] 320 px, keyboard, contrast, 200% zoom 검증
 - 수용 기준: Story/demo page 또는 component tests로 상태 확인
 
 ### P1-05 브라우저 저장 계약
 
-- [ ] versioned profile/planner schema와 storage port 설계
-- [ ] 저장/읽기/삭제/migration 실패 unit test
-- [ ] 기기 공동 사용과 삭제 안내 문구
+- [x] versioned profile/planner schema와 storage port 설계
+- [x] 저장/읽기/삭제/migration 실패 unit test
+- [x] 기기 공동 사용과 삭제 안내 문구
 - 수용 기준: 서버/로그로 프로필 전송이 없음을 네트워크 테스트로 확인
 
 권장 첫 작업: **P1-01 기반 초기화**. 외부 DB나 배포 없이 웹 앱과 로컬 품질 명령만 만든다.
+
+Phase 1 검증 기록: Next.js 16.4.3, React 19.3.1, TypeScript 5.9.3, Tailwind CSS
+4.3.3, Vitest 5.0.5를 lockfile에 고정했다. `npm audit`에서 알려진 취약점 0건을 확인했고,
+Node 24 환경의 `npm ci`, format/lint/typecheck/unit/build와 320 px·200% 확대 Chromium smoke
+E2E를 통과했다. E2E에서 외부 origin 요청이 없음을 확인했으며 배포와 외부 서비스 연결은
+수행하지 않았다.
 
 ## Phase 2 — 식품 데이터
 
@@ -132,4 +138,12 @@ Phase 0 종료 조건: 애플리케이션 코드, DB, 외부 서비스 연결, �
 - 모든 사용자 무료와 MVP 월 인프라 비용 0원을 제품 요구사항으로 확정했다.
 - 비공개 저장소를 유지할 수 있는 Vercel Hobby를 우선 후보로 기록했다.
 - PWA는 별도 주소가 아니라 배포된 웹사이트의 설치 가능 형태로 정의했다.
+
+### 2026-11-01 — Phase 1
+
+- Node 24/npm 11 정책과 Next.js 16 App Router 기반을 lockfile로 고정했다.
+- 한국어 반응형 shell, 접근 가능한 기본 컴포넌트, 버전 있는 프로필·플래너 저장 계약을
+  구현했다.
+- PR CI와 로컬 품질 명령, 단위·컴포넌트·Chromium smoke 테스트를 구성했다.
+- DB, 외부 데이터, 배포 workflow, 외부 서비스 연결은 추가하지 않았다.
 
