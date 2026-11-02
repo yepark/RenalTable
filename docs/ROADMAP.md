@@ -71,9 +71,9 @@ E2E를 통과했다. E2E에서 외부 origin 요청이 없음을 확인했으며
   - [x] PostgreSQL 18 compose, Drizzle schema와 SQL migration 작성
   - [x] 누락값·계보·게시 상태 제약의 격리 DB 통합 테스트
   - [!] 실제 PostgreSQL 18.6 compose smoke 필요(Docker/psql 미설치 환경)
-- [ ] raw snapshot, validator, normalizer, quality report
+- [x] raw snapshot 계약, validator, source adapter, normalizer, quality report 로컬 기반
 - [!] 최초 운영 데이터 매핑/게시 사람 승인
-- [ ] 음식 검색/상세 API와 UI
+- [x] 음식 검색/상세 API와 UI 기반
 
 ## Phase 3 — 레시피
 
@@ -158,6 +158,16 @@ E2E를 통과했다. E2E에서 외부 origin 요청이 없음을 확인했으며
 - 누락 영양값과 숫자 0의 구분, 원본-식품 계보, 게시 시각을 DB 제약으로 검증했다.
 - 격리 PostgreSQL 호환 환경의 migration/제약 테스트 7개와 `npm audit` 0건을 확인했다.
 - 실제 PostgreSQL 18.6 compose smoke는 Docker/psql을 사용할 수 있는 환경에서 남아 있다.
+
+### 2026-11-02 — Phase 2 로컬 ETL·음식 조회 기반
+
+- 외부 API를 호출하지 않고 식약처 OpenAPI와 전국통합 표준데이터용 순수 adapter, canonical
+  staging record, Zod 경계 검증과 품질 보고서를 구현했다.
+- 누락과 숫자 0, 미량을 구분하고 칼륨·인 누락, 잘못된 값·단위, 동일 출처 키 중복 후보가 있으면
+  게시 대상을 만들지 않는 회귀 테스트를 추가했다.
+- repository port와 빈 운영 adapter, 게시 데이터 전용 음식 목록·상세 API, 한국어 검색·빈 상태·
+  정보 없음·출처 표시 UI 기반을 구현했다.
+- 실제 공공데이터 다운로드, API 키, 외부 DB, 운영 데이터 게시와 배포는 수행하지 않았다.
 
 ### 2026-11-02 — 소유자 전용 웹 미리보기
 

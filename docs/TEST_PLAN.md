@@ -108,3 +108,14 @@ main/nightly 또는 수동: 전체 브라우저 E2E, 접근성 scan, dependency/
 - 전문가 검토 필요 항목은 승인되거나 공개 기능에서 비활성화
 - 알려진 제한과 미실행 테스트를 릴리스 노트에 기록
 
+## 10. Phase 2 로컬 회귀 범위
+
+- 격리 PostgreSQL 호환 DB에서 migration, `PRESENT 0` 허용, `MISSING 0`·`PRESENT null`·음수
+  거부, 계보 불일치와 게시 시각 누락 거부를 검증한다.
+- ETL unit test에서 칼륨·인 누락, invalid unit/value, 동일 출처 키 중복 후보와 배치 게시 차단을
+  검증한다.
+- repository/route 계약 test에서 `PUBLISHED`가 아닌 음식의 목록·상세 노출을 차단한다.
+- component/E2E test에서 한국어 검색·빈 상태와 정보 없음·출처 표시 기반을 검증한다.
+- CI와 로컬 테스트는 실제 운영 API를 호출하지 않고 실제 환자 데이터나 임의 운영 영양 수치를
+  사용하지 않는다.
+

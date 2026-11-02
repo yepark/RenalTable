@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata, Route, Viewport } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import "./globals.css";
@@ -32,6 +32,14 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             <span className="ml-3 hidden text-sm text-[var(--color-muted)] sm:inline">
               Eat Well, Care Better.
             </span>
+            <nav aria-label="주요 메뉴" className="ml-auto">
+              <Link
+                className="rounded-sm font-semibold text-[var(--color-brand)]"
+                href={"/foods" as Route}
+              >
+                음식 정보
+              </Link>
+            </nav>
           </div>
         </header>
         {children}

@@ -1,7 +1,7 @@
 # 공공 식품영양 데이터와 의료 콘텐츠 출처
 
 - 조사 기준일: 2026-11-01
-- 상태: Phase 0 조사; 실제 API 호출·다운로드·서비스 연결은 수행하지 않음
+- 상태: Phase 2 로컬 adapter/품질 보고서 구현; 실제 API 호출·다운로드·서비스 연결은 수행하지 않음
 
 ## 1. 식품 데이터 우선 출처
 
@@ -103,6 +103,18 @@ Publish
 ```
 
 ETL은 idempotent해야 하며 같은 snapshot+normalizer version을 재실행해 같은 staging 결과를 만들어야 한다. 검증 실패 시 기존 게시 데이터를 유지한다.
+
+### Phase 2 로컬 구현
+
+- `MFDS_OPEN_API`와 `STANDARD_PUBLIC_DATA`를 별도 순수 adapter로 두고 공통 canonical staging
+  record로 변환한다.
+- 필수 키와 타입은 Zod로 검증하고, 값·단위 오류는 구조 오류와 구분해 품질 보고서에 기록한다.
+- 값이 비었으면 `MISSING/null`, 출처가 숫자 0을 주면 `PRESENT/0`, 미량 표기는
+  `TRACE/null`로 보존한다.
+- 칼륨·인을 포함한 핵심 영양소별 present/zero/missing/trace 건수를 보고한다.
+- 동일 `source + externalId + revision`은 중복 후보로 기록하고 자동 병합하지 않는다.
+- 오류 또는 중복 후보가 있는 배치는 staging 결과를 검토용으로 남길 수 있지만 게시 대상은 0건이다.
+- 실제 응답 fixture나 운영 snapshot은 저장하지 않았고 `TEST ONLY` 최소 합성 fixture만 사용한다.
 
 ## 6. 라이선스와 표시
 

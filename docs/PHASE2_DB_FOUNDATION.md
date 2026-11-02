@@ -1,8 +1,8 @@
-# Phase 2 로컬 데이터베이스 기반
+# Phase 2 로컬 식품 데이터 기반
 
-- 상태: 구현 완료, 실제 PostgreSQL compose smoke 대기
+- 상태: DB·ETL·공개 조회 기반 구현 완료, 실제 PostgreSQL compose smoke와 운영 데이터 승인 대기
 - 기준일: 2026-11-02
-- 범위: 외부 서비스 연결 없이 로컬 PostgreSQL 스키마와 마이그레이션을 검증한다.
+- 범위: 외부 서비스 연결 없이 로컬 PostgreSQL 스키마, ETL adapter, 공개 조회 계약과 UI 기반을 검증한다.
 
 ## Requirement
 
@@ -11,6 +11,8 @@
 - 원본 출처, 수집 배치, 원본 레코드, 정규화 식품과 영양 관측의 계보를 보존한다.
 - 사용자 프로필과 식단표를 서버 테이블로 만들지 않는다.
 - 운영 데이터, 실제 환자 데이터, API 키, 자동 게시 경로를 만들지 않는다.
+- 식약처 OpenAPI와 전국통합 표준데이터의 응답 경계를 출처별 순수 adapter로 분리한다.
+- 공개 조회는 repository port 뒤에서 `PUBLISHED`와 게시 시각이 모두 있는 식품만 반환한다.
 
 ## Design
 
@@ -25,6 +27,10 @@
 - 외래 키 삭제는 `RESTRICT`, 공개 이력은 상태 전이와 시각으로 보존한다.
 - `PRESENT`만 0 이상의 숫자를 허용하고 `TRACE`, `BELOW_LIMIT`, `MISSING`,
   `NOT_APPLICABLE`은 `amount IS NULL`을 강제한다.
+- Zod 경계 검증 뒤 canonical staging record를 만들고, 오류나 동일 출처 키 중복 후보가 하나라도
+  있으면 해당 배치의 `publishableRecords`를 비운다.
+- 실제 데이터 adapter는 연결하지 않고 운영 repository는 빈 in-memory adapter로 둔다. 합성 fixture는
+  `TEST ONLY — 운영 사용 금지`로 표시한다.
 
 ## Tasks
 
@@ -32,7 +38,9 @@
 2. Drizzle 설정과 Phase 2 식품 테이블 schema를 작성한다.
 3. 검토 가능한 첫 SQL migration을 생성한다.
 4. 격리 PostgreSQL 호환 엔진에서 migration과 위험 제약을 통합 테스트한다.
-5. format, lint, typecheck, unit/integration, build를 실행하고 ROADMAP을 갱신한다.
+5. 출처별 adapter, 품질 보고서와 실패 시 게시 차단을 구현한다.
+6. repository port와 목록·상세 route 계약, 한국어 검색·빈 상태 UI를 구현한다.
+7. format, lint, typecheck, unit/integration, build, E2E를 실행하고 ROADMAP을 갱신한다.
 
 ## Acceptance criteria
 
@@ -42,6 +50,11 @@
 - 출처 없는 영양 관측과 게시 시각 없는 `PUBLISHED` 식품은 거부된다.
 - 서버 schema에 프로필, 목표, 식단표 테이블이 없다.
 - 저장소에 seed 영양값, 외부 API 응답, 비밀값이 없다.
+- 식약처/표준데이터 fixture가 같은 canonical 계약으로 변환되며 잘못된 값·단위·중복 후보를 보고한다.
+- `PRESENT 0`, `MISSING null`, 칼륨·인 누락이 staging과 품질 보고서에서 구분된다.
+- 검증 실패 배치는 게시 대상을 만들지 않는다.
+- 목록·상세 API가 미게시 식품을 차단하고 누락 영양값을 `null`과 `정보 없음`으로 반환한다.
+- `/foods`는 한국어 검색, 빈 상태, 출처·기준량·수집 시점 표시 기반을 제공한다.
 
 ## Medical and privacy risks
 
@@ -50,6 +63,9 @@
 | 누락값을 0으로 저장해 낮은 함량처럼 보임 | 상태-값 조합 `CHECK`와 결함 주입 테스트 |
 | 원본 출처나 기준량 손실 | 필수 FK, 기준량, 단위와 수집 배치 필드 |
 | 검토 전 데이터 게시 | 명시적 게시 상태와 게시 시각 제약; 게시 use case는 후속 작업 |
+| 오류가 일부인 배치의 부분 게시 | 배치 오류·중복 후보가 있으면 게시 대상 배열을 생성하지 않음 |
+| 테스트 수치의 운영 노출 | 운영 repository는 빈 상태, fixture는 테스트 모듈에서만 사용 |
+| 원본 payload의 공개 API 노출 | 공개 DTO가 허용 필드만 직렬화하고 raw payload를 제외 |
 | 건강 프로필 서버 수집 | 프로필·식단 서버 테이블과 API를 만들지 않음 |
 | 비밀값 커밋 | 예시값만 제공하고 실제 `.env`는 gitignore 유지 |
 
@@ -64,6 +80,8 @@
 - Drizzle ORM 0.45.4, Drizzle Kit 0.31.11, Zod 4.6.7을 보안 수정 버전으로 고정했다.
 - PGlite의 격리 PostgreSQL 호환 환경에서 빈 DB migration과 제약 회귀 테스트 7개가
   통과했다.
+- 출처별 adapter, 품질 보고서, repository/API/UI 계약을 테스트 전용 최소 fixture로 검증했다.
+- 실제 공공데이터 응답, API 키, Supabase/PostgreSQL 인스턴스에는 연결하지 않았다.
 - `npm audit` 0건을 확인했다.
 - 현재 작업 환경에는 Docker와 `psql`이 없어 PostgreSQL 18.6 컨테이너 smoke는 실행하지
   못했다. `docker compose up -d postgres && npm run db:migrate` 검증 후 ROADMAP 항목을

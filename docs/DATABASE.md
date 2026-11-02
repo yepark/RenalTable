@@ -1,8 +1,13 @@
 # RenalTable 데이터베이스 설계
 
-- 상태: Phase 0 논리 설계
+- 상태: Phase 2 핵심 식품 테이블 로컬 구현
 - DB: PostgreSQL
-- 구현 예정: Phase 2
+- 구현: `src/shared/infrastructure/db/schema.ts`, `drizzle/0000_absent_psylocke.sql`,
+  `drizzle/0001_keen_beyonder.sql`
+
+> 실제 외부 PostgreSQL/Supabase에는 연결하지 않았다. SQL migration은 검토 가능하게 저장하고
+> PGlite 격리 환경에서 제약을 검증했으며, PostgreSQL 18 compose smoke는 로컬 도구가 있는 환경에서
+> 별도 확인한다.
 
 ## 1. 모델링 원칙
 

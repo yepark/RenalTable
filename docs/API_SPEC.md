@@ -1,6 +1,6 @@
 # RenalTable API 명세 초안
 
-- 상태: Phase 0
+- 상태: Phase 2 음식 목록·상세 로컬 계약 구현
 - 형식: Next.js Route Handlers, JSON over HTTPS
 - 원칙: 공개·검토 완료 데이터의 읽기 API를 우선한다.
 
@@ -58,6 +58,10 @@ Query: `q`, `category`, `cursor`, `limit`.
 
 - 식품, 카테고리, 기준량, 핵심 영양값, 출처와 데이터 날짜 반환
 - 없는 ID는 404 `FOOD_NOT_FOUND`
+
+현재 Phase 2 구현은 repository port와 빈 운영 adapter를 사용한다. 검토·게시 승인된 실제 데이터가
+없으므로 운영 화면과 API는 빈 결과를 반환하며, 계약 테스트에서만 `TEST ONLY` fixture를 주입한다.
+공개 DTO에는 `raw_payload`, 내부 게시 상태, import 오류와 승인자 정보를 포함하지 않는다.
 
 ### `GET /api/meals`
 
