@@ -16,6 +16,20 @@ npm run dev
 브라우저에서 `http://localhost:3000`을 엽니다. Phase 1에는 환경 변수나 외부 서비스 연결이
 필요하지 않습니다.
 
+## 로컬 데이터베이스
+
+Phase 2 식품 데이터 스키마는 PostgreSQL 18을 기준으로 합니다. 실제 비밀값이 아닌 로컬
+전용 값을 `.env.example`에서 `.env`로 복사한 뒤 실행합니다.
+
+```sh
+docker compose up -d postgres
+npm run db:migrate
+npm run test:db
+```
+
+`npm run db:check`는 Drizzle schema와 커밋된 SQL migration의 차이를 검사합니다. 운영
+데이터 seed, 외부 데이터 다운로드와 원격 데이터베이스 연결은 포함하지 않습니다.
+
 ## 품질 검사
 
 ```sh

@@ -1,7 +1,7 @@
 # RenalTable 로드맵
 
-- 최종 갱신: 2026-11-01
-- 현재 상태: Phase 1 완료, Phase 2 승인 대기
+- 최종 갱신: 2026-11-02
+- 현재 상태: Phase 2 진행 중
 - 상태 표기: `[x] 완료`, `[ ] 미착수`, `[!] 사람 승인/외부 검증 필요`
 
 ## Phase 0 — 프로젝트 분석 및 요구사항
@@ -68,6 +68,9 @@ E2E를 통과했다. E2E에서 외부 origin 요청이 없음을 확인했으며
 
 - [!] 공공데이터 활용신청/키 발급과 라이선스 재확인
 - [ ] 로컬 PostgreSQL, Drizzle schema/migration
+  - [x] PostgreSQL 18 compose, Drizzle schema와 SQL migration 작성
+  - [x] 누락값·계보·게시 상태 제약의 격리 DB 통합 테스트
+  - [!] 실제 PostgreSQL 18.6 compose smoke 필요(Docker/psql 미설치 환경)
 - [ ] raw snapshot, validator, normalizer, quality report
 - [!] 최초 운영 데이터 매핑/게시 사람 승인
 - [ ] 음식 검색/상세 API와 UI
@@ -98,6 +101,7 @@ E2E를 통과했다. E2E에서 외부 origin 요청이 없음을 확인했으며
 
 ## Phase 6 — 품질 검증과 공개 준비
 
+- [x] Sites 소유자 전용 정적 웹 미리보기 승인 및 구성
 - [ ] 전체 E2E/접근성/성능/보안 점검
 - [ ] 데이터 정확성 sampling과 ETL rollback drill
 - [!] 의료 콘텐츠 전문가 최종 검토
@@ -146,4 +150,20 @@ E2E를 통과했다. E2E에서 외부 origin 요청이 없음을 확인했으며
   구현했다.
 - PR CI와 로컬 품질 명령, 단위·컴포넌트·Chromium smoke 테스트를 구성했다.
 - DB, 외부 데이터, 배포 workflow, 외부 서비스 연결은 추가하지 않았다.
+
+### 2026-11-02 — Phase 2 로컬 DB 기반
+
+- 공공데이터나 외부 서비스를 연결하지 않고 Phase 2 식품 데이터용 PostgreSQL schema와
+  SQL migration을 작성했다.
+- 누락 영양값과 숫자 0의 구분, 원본-식품 계보, 게시 시각을 DB 제약으로 검증했다.
+- 격리 PostgreSQL 호환 환경의 migration/제약 테스트 7개와 `npm audit` 0건을 확인했다.
+- 실제 PostgreSQL 18.6 compose smoke는 Docker/psql을 사용할 수 있는 환경에서 남아 있다.
+
+### 2026-11-02 — 소유자 전용 웹 미리보기
+
+- 사용자의 명시적 요청에 따라 현재 한국어 홈 화면을 정적 export로 전환했다.
+- 건강 프로필, 식단, 외부 데이터와 데이터베이스 연결 없이 Sites 소유자 전용 배포를
+  구성했다.
+- 공개 전환, 광고 연결, 의료 콘텐츠 게시와 운영 데이터 반영은 별도 승인·검토 대상으로
+  유지했다.
 
