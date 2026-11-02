@@ -18,7 +18,7 @@ describe("Phase 2 PostgreSQL schema", () => {
   const client = new PGlite();
 
   beforeAll(async () => {
-    await migrate(drizzle(client), { migrationsFolder: "drizzle" });
+    await migrate(drizzle(client), { migrationsFolder: "db/migrations" });
     await client.exec(`
       INSERT INTO content_source (
         id, publisher, title, url, source_type, retrieved_at, content_hash

@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 
 function drizzleStatus() {
-  const result = spawnSync("git", ["status", "--porcelain", "--", "drizzle"], {
+  const result = spawnSync("git", ["status", "--porcelain", "--", "db/migrations"], {
     encoding: "utf8",
   });
   if (result.status !== 0) {

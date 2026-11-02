@@ -19,6 +19,7 @@
 - PostgreSQL 18 공식 컨테이너의 변경된 `PGDATA` 규칙에 맞춰 volume을
   `/var/lib/postgresql`에 연결한다.
 - Drizzle schema를 타입 정의의 기준으로 두고 생성된 SQL migration을 함께 검토한다.
+- Sites 정적 패키징의 예약 경로와 충돌하지 않도록 SQL migration은 `db/migrations/`에 둔다.
 - `content_source → food_import_log → food_source_record → food_nutrient` 연결로 출처와
   수집 배치를 추적한다.
 - 외래 키 삭제는 `RESTRICT`, 공개 이력은 상태 전이와 시각으로 보존한다.

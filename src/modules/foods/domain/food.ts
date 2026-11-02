@@ -11,11 +11,7 @@ export type NutrientCode = (typeof NUTRIENT_CODES)[number];
 export type NutrientUnit = "KCAL" | "G" | "MG" | "ML";
 export type BasisUnit = "G" | "ML" | "SERVING";
 export type NutrientValueStatus =
-  | "PRESENT"
-  | "TRACE"
-  | "BELOW_LIMIT"
-  | "MISSING"
-  | "NOT_APPLICABLE";
+  "PRESENT" | "TRACE" | "BELOW_LIMIT" | "MISSING" | "NOT_APPLICABLE";
 
 export type FoodNutrient = {
   nutrientCode: NutrientCode;
@@ -40,7 +36,8 @@ export type Food = {
   canonicalNameKo: string;
   categoryCode: string;
   foodKind: "RAW" | "PROCESSED" | "DISH";
-  preparationState: "UNKNOWN" | "RAW" | "BOILED" | "STEAMED" | "GRILLED" | "BAKED" | "FRIED" | "OTHER";
+  preparationState:
+    "UNKNOWN" | "RAW" | "BOILED" | "STEAMED" | "GRILLED" | "BAKED" | "FRIED" | "OTHER";
   defaultBasis: { amount: number; unit: BasisUnit };
   status: "DRAFT" | "REVIEWED" | "PUBLISHED" | "RETIRED";
   nutrients: FoodNutrient[];

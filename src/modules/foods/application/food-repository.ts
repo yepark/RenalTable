@@ -32,9 +32,13 @@ export class InMemoryFoodRepository implements FoodRepository {
       .filter((food) => food.status === "PUBLISHED" && food.publishedAt !== null)
       .filter((food) => !query.category || food.categoryCode === query.category)
       .filter(
-        (food) => !search || food.canonicalNameKo.normalize("NFC").toLocaleLowerCase("ko").includes(search),
+        (food) =>
+          !search || food.canonicalNameKo.normalize("NFC").toLocaleLowerCase("ko").includes(search),
       )
-      .sort((a, b) => a.canonicalNameKo.localeCompare(b.canonicalNameKo, "ko") || a.id.localeCompare(b.id));
+      .sort(
+        (a, b) =>
+          a.canonicalNameKo.localeCompare(b.canonicalNameKo, "ko") || a.id.localeCompare(b.id),
+      );
     const items = matches.slice(start, start + query.limit);
     const nextOffset = start + items.length;
 

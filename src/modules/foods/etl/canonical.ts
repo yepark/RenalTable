@@ -25,7 +25,8 @@ export type CanonicalStagingRecord = {
   canonicalNameKo: string;
   categoryCode: string;
   foodKind: "RAW" | "PROCESSED" | "DISH";
-  preparationState: "UNKNOWN" | "RAW" | "BOILED" | "STEAMED" | "GRILLED" | "BAKED" | "FRIED" | "OTHER";
+  preparationState:
+    "UNKNOWN" | "RAW" | "BOILED" | "STEAMED" | "GRILLED" | "BAKED" | "FRIED" | "OTHER";
   basisAmount: number;
   basisUnit: BasisUnit;
   nutrients: CanonicalNutrient[];
@@ -49,7 +50,10 @@ export type QualityReport = {
   acceptedCount: number;
   rejectedCount: number;
   duplicateCandidates: string[];
-  nutrientCompleteness: Record<NutrientCode, { present: number; zero: number; missing: number; trace: number }>;
+  nutrientCompleteness: Record<
+    NutrientCode,
+    { present: number; zero: number; missing: number; trace: number }
+  >;
   issues: ValidationIssue[];
   canCreatePublishTarget: boolean;
 };
@@ -67,7 +71,8 @@ export function parseBasis(rawAmount: unknown, rawUnit: unknown) {
   const amount = parseNonnegativeNumber(rawAmount);
   const unit = typeof rawUnit === "string" ? rawUnit.trim().toUpperCase() : "";
   const parsedUnit = basisUnitSchema.safeParse(unit);
-  if (amount === null || amount <= 0) return { error: "기준량은 0보다 큰 숫자여야 합니다." } as const;
+  if (amount === null || amount <= 0)
+    return { error: "기준량은 0보다 큰 숫자여야 합니다." } as const;
   if (!parsedUnit.success) return { error: "지원하지 않는 기준 단위입니다." } as const;
   return { amount, unit: parsedUnit.data } as const;
 }
@@ -94,7 +99,8 @@ export function parseNutrient(
     }
   }
   const amount = parseNonnegativeNumber(rawValue);
-  if (amount === null) return { error: `${code} 값은 0 이상의 숫자여야 합니다.`, kind: "INVALID_VALUE" };
+  if (amount === null)
+    return { error: `${code} 값은 0 이상의 숫자여야 합니다.`, kind: "INVALID_VALUE" };
   return { code, amount, unit: parsedUnit.data, valueStatus: "PRESENT" };
 }
 
